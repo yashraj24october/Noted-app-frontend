@@ -5,7 +5,7 @@ const AuthContext = createContext()
 export const useAuth = () => useContext(AuthContext)
 
 // ─── Axios defaults ───────────────────────────────────
-axios.defaults.baseURL       = '/api'
+axios.defaults.baseURL       = `${import.meta.env.VITE_BACKEND_URL || ''}/api`
 axios.defaults.withCredentials = true  // always send cookies
 
 // ─── Auto-refresh interceptor ─────────────────────────
