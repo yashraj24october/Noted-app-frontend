@@ -1,0 +1,255 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────
+   LIGHT MODE (default) — warm beige palette
+───────────────────────────────────────────── */
+:root {
+  --bg-canvas:       #f0ebe0;
+  --bg-page:         #ede8dd;
+  --bg-card:         #ffffff;
+  --bg-card-alt:     #faf8f4;
+  --bg-input:        #f7f4ef;
+  --bg-hover:        #f2ede3;
+
+  --border-soft:     rgba(0,0,0,0.07);
+  --border-md:       rgba(0,0,0,0.11);
+  --border-strong:   rgba(0,0,0,0.18);
+
+  --text-primary:    #1a1c23;
+  --text-secondary:  #6b6b78;
+  --text-tertiary:   #a0a0ac;
+  --text-placeholder:#b8b8c4;
+
+  --accent:          #5c6ac4;
+  --accent-light:    #eef0fb;
+  --accent-hover:    #4a58b2;
+
+  --danger:          #e05555;
+  --danger-bg:       #f5e5e5;
+  --warning:         #d4891a;
+  --warning-bg:      #fdf3d8;
+  --success:         #3d9a5e;
+  --success-bg:      #e5f4eb;
+  --warm:            #c4875c;
+  --warm-bg:         #f5ede3;
+
+  --shadow-xs:       0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-sm:       0 2px 8px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05);
+  --shadow-md:       0 4px 16px rgba(0,0,0,0.09), 0 2px 6px rgba(0,0,0,0.05);
+  --shadow-lg:       0 12px 40px rgba(0,0,0,0.12);
+  --shadow-xl:       0 24px 64px rgba(0,0,0,0.14), 0 8px 24px rgba(0,0,0,0.08);
+  --shadow-modal:    0 32px 80px rgba(0,0,0,0.18);
+  --shadow-accent:   0 2px 8px rgba(92,106,196,0.28);
+}
+
+/* ─────────────────────────────────────────────
+   DARK MODE — soft dark, easy on the eyes
+   Applied when <html data-theme="dark">
+───────────────────────────────────────────── */
+[data-theme="dark"] {
+  --bg-canvas:       #161820;
+  --bg-page:         #1c1e28;
+  --bg-card:         #242736;
+  --bg-card-alt:     #1e2030;
+  --bg-input:        #2a2d3e;
+  --bg-hover:        #2e3144;
+
+  --border-soft:     rgba(255,255,255,0.07);
+  --border-md:       rgba(255,255,255,0.11);
+  --border-strong:   rgba(255,255,255,0.18);
+
+  --text-primary:    #e8e9f0;
+  --text-secondary:  #9899a8;
+  --text-tertiary:   #60617a;
+  --text-placeholder:#4a4b60;
+
+  --accent:          #7c8ce8;
+  --accent-light:    rgba(124,140,232,0.15);
+  --accent-hover:    #8f9ef0;
+
+  --danger:          #f07070;
+  --danger-bg:       rgba(240,112,112,0.12);
+  --warning:         #e8a040;
+  --warning-bg:      rgba(232,160,64,0.12);
+  --success:         #56c47a;
+  --success-bg:      rgba(86,196,122,0.12);
+  --warm:            #d4956a;
+  --warm-bg:         rgba(212,149,106,0.12);
+
+  --shadow-xs:       0 1px 3px rgba(0,0,0,0.3);
+  --shadow-sm:       0 2px 8px rgba(0,0,0,0.35);
+  --shadow-md:       0 4px 16px rgba(0,0,0,0.4);
+  --shadow-lg:       0 12px 40px rgba(0,0,0,0.5);
+  --shadow-xl:       0 24px 64px rgba(0,0,0,0.5);
+  --shadow-modal:    0 32px 80px rgba(0,0,0,0.6);
+  --shadow-accent:   0 2px 8px rgba(124,140,232,0.3);
+}
+
+/* ─── Base ─── */
+@layer base {
+  * { box-sizing: border-box; }
+
+  html {
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  input, textarea, button, select { font-family: inherit; }
+
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
+}
+
+/* ─── Utilities ─── */
+@layer utilities {
+  .line-clamp-2 { overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+  .line-clamp-3 { overflow:hidden; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; }
+
+  /* Theme-aware semantic classes — use these in components */
+  .bg-canvas    { background-color: var(--bg-canvas); }
+  .bg-page      { background-color: var(--bg-page); }
+  .bg-card      { background-color: var(--bg-card); }
+  .bg-card-alt  { background-color: var(--bg-card-alt); }
+  .bg-inp       { background-color: var(--bg-input); }
+  .bg-hover-t   { background-color: var(--bg-hover); }
+
+  .text-primary-t   { color: var(--text-primary); }
+  .text-secondary-t { color: var(--text-secondary); }
+  .text-tertiary-t  { color: var(--text-tertiary); }
+
+  .border-soft   { border-color: var(--border-soft); }
+  .border-md-t   { border-color: var(--border-md); }
+
+  .shadow-theme-xs    { box-shadow: var(--shadow-xs); }
+  .shadow-theme-sm    { box-shadow: var(--shadow-sm); }
+  .shadow-theme-md    { box-shadow: var(--shadow-md); }
+  .shadow-theme-modal { box-shadow: var(--shadow-modal); }
+  .shadow-theme-accent { box-shadow: var(--shadow-accent); }
+
+  .accent-color { color: var(--accent); }
+  .accent-bg    { background-color: var(--accent); }
+  .accent-light-bg { background-color: var(--accent-light); }
+}
+
+/* ─────────────────────────────────────────────
+   GLOBAL TRANSITION POLISH
+───────────────────────────────────────────── */
+@layer base {
+  /* All interactive elements get smooth transitions by default */
+  button, a, input, select, textarea {
+    transition: background-color 0.18s ease,
+                border-color     0.18s ease,
+                color            0.18s ease,
+                box-shadow       0.18s ease,
+                opacity          0.18s ease;
+  }
+
+  /* Theme switch — all vars transition */
+  *, *::before, *::after {
+    transition: background-color 0.22s ease,
+                border-color     0.22s ease,
+                color            0.18s ease;
+  }
+
+  /* But don't transition layout/transform by default (causes jank) */
+  *, *::before, *::after {
+    transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow;
+  }
+}
+
+@layer utilities {
+  /* ── Hover lift — reusable on any card ── */
+  .hover-lift {
+    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1),
+                box-shadow 0.2s ease !important;
+  }
+  .hover-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md) !important;
+  }
+  .hover-lift:active {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm) !important;
+  }
+
+  /* ── Press effect — buttons feel physical ── */
+  .press {
+    transition: transform 0.1s ease !important;
+  }
+  .press:active {
+    transform: scale(0.96);
+  }
+
+  /* ── Shimmer skeleton loader ── */
+  .shimmer-bg {
+    background: linear-gradient(
+      90deg,
+      var(--bg-input) 25%,
+      var(--bg-hover) 50%,
+      var(--bg-input) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  /* ── Glow on focus ── */
+  .focus-glow:focus-within {
+    box-shadow: 0 0 0 3px var(--accent-light), var(--shadow-sm);
+  }
+
+  /* ── Stagger children fade-in-up ── */
+  .stagger-children > * {
+    opacity: 0;
+    animation: fadeInUp 0.28s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+  }
+  .stagger-children > *:nth-child(1) { animation-delay: 0.03s; }
+  .stagger-children > *:nth-child(2) { animation-delay: 0.08s; }
+  .stagger-children > *:nth-child(3) { animation-delay: 0.13s; }
+  .stagger-children > *:nth-child(4) { animation-delay: 0.18s; }
+  .stagger-children > *:nth-child(5) { animation-delay: 0.23s; }
+  .stagger-children > *:nth-child(6) { animation-delay: 0.28s; }
+  .stagger-children > *:nth-child(n+7) { animation-delay: 0.33s; }
+
+  /* ── Smooth number transition (for stats) ── */
+  .num-transition {
+    display: inline-block;
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .num-transition.updated {
+    animation: statReveal 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+
+  /* ── Page section entrance ── */
+  .section-enter {
+    animation: fadeInUp 0.32s cubic-bezier(0.25,0.46,0.45,0.94) both;
+  }
+
+  /* ── Floating action button pulse ring ── */
+  .fab-ring::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+    border: 2px solid var(--accent);
+    opacity: 0;
+    animation: pulse 2s ease infinite;
+  }
+}
+
+/* ─── Note card entrance animation ───────────────────
+   Uses CSS custom property --delay set via inline style.
+   Defined as a CSS class so React re-renders don't reset it.
+───────────────────────────────────────────────────── */
+.note-card-enter {
+  animation: fadeInUp 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) var(--delay, 0ms) both;
+}
