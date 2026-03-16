@@ -7,7 +7,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000',
+        target: "https://noted-backend-6dwfk36q2-yash-rajs-projects-c4dfd886.vercel.app",
         changeOrigin: true,
       }
     }
