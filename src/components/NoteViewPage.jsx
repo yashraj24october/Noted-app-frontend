@@ -129,7 +129,7 @@ export default function NoteViewPage({ note, onClose, onEditNote, onShareNote, o
       <div className={panelCls} style={{ background: bg, boxShadow: 'var(--shadow-modal)' }}>
 
         {/* ── Topbar ── */}
-        <div style={{ display:'flex',alignItems:'center', fleWwrap:'wrap',justifyContent:'space-between',padding:'12px 20px',borderBottom:'1px solid var(--border-soft)',background:bg,flexShrink:0 }}>
+        <div style={{ display:'flex',alignItems:'center', flexWrap:'wrap',justifyContent:'space-between',rowGap:'.5rem',padding:'12px 20px',borderBottom:'1px solid var(--border-soft)',background:bg,flexShrink:0 }}>
 
           {/* Left */}
           <div style={{ display:'flex',alignItems:'center',gap:10 }}>

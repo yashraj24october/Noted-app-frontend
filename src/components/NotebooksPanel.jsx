@@ -82,7 +82,7 @@ function NotebookFormModal({ notebook, onClose, onSave }) {
             value={name}
             onChange={e => setName(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSave()}
-            placeholder="e.g. MCA Notes, Project Ideas..."
+            placeholder="e.g. My Notebook, Project Ideas..."
             style={{ width:'100%',background:'var(--bg-input)',border:'1px solid var(--border-md)',borderRadius:9,padding:'9px 13px',fontSize:14,color:'var(--text-primary)',outline:'none' }}
             onFocus={e => { e.target.style.borderColor='var(--accent)'; e.target.style.boxShadow='0 0 0 3px var(--accent-light)' }}
             onBlur={e => { e.target.style.borderColor='var(--border-md)'; e.target.style.boxShadow='none' }}

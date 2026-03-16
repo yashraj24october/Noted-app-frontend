@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 import toast from 'react-hot-toast'
-
+import indiaFlag from "../assets/india.png";
 function LoadingDots() {
   return (
     <span className="flex gap-1.5 items-center">
@@ -291,7 +291,7 @@ export default function AuthPage() {
         )}
 
         {/* ── Built by ── */}
-        <div style={{ marginTop:28, paddingTop:18, borderTop:'1px solid var(--border-soft)', textAlign:'center' }}>
+        {/* <div style={{ marginTop:28, paddingTop:18, borderTop:'1px solid var(--border-soft)', textAlign:'center' }}>
           <p style={{ fontSize:11.5, color:'var(--text-tertiary)', letterSpacing:'0.2px' }}>
             Built with{' '}
             <span style={{ color:'#e05555', fontSize:13 }}>❤️</span>
@@ -310,6 +310,61 @@ export default function AuthPage() {
               </Link>
             </span>
           </p>
+        </div> */}
+        {/* ── Footer Info ── */}
+        <div style={{ marginTop: 28, paddingTop: 18, borderTop: '1px solid var(--border-soft)', textAlign: 'center' }}>
+          <p style={{ fontSize: 11.5, color: 'var(--text-tertiary)', letterSpacing: '0.2px', marginBottom: 12 }}>
+            Built with{' '}
+            <span style={{ color: '#e05555', fontSize: 13 }}>❤️</span>
+            {' '}by{' '}
+            <span style={{
+              fontFamily: "'Instrument Serif',serif",
+              fontStyle: 'italic',
+              fontSize: 13.5,
+              background: 'linear-gradient(135deg, var(--accent), #9464dc)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              fontWeight: 600,
+            }}>
+              <Link to="https://www.linkedin.com/in/yash-raj-8a758323b/" target="_blank" style={{ textDecoration: 'none', color: 'inherit' }}>
+                Yash Raj
+              </Link>
+            </span>
+          </p>
+          
+
+          {/* Proudly Indian Badge */}
+<div style={{ 
+  display: 'flex', 
+  alignItems: 'center', 
+  justifyContent: 'center', 
+  gap: '10px', 
+  marginTop: '16px' 
+}}>
+  <img
+    src={indiaFlag}
+    alt="India Flag"
+    style={{
+      width: '18px',
+      height: '12px',
+      objectFit: 'cover',
+      borderRadius: '2px',
+      boxShadow: '0 0 2px rgba(0,0,0,0.15)'
+    }}
+  />
+
+  <div style={{ width: '1px', height: '12px', background: 'var(--border-md)' }} />
+
+  <span style={{ 
+    fontSize: '11px', 
+    fontWeight: 600, 
+    color: 'var(--text-tertiary)', 
+    letterSpacing: '0.5px',
+    textTransform: 'uppercase'
+  }}>
+    Made in India for the World
+  </span>
+</div>
         </div>
       </div>
     </div>
