@@ -1,12 +1,22 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    
+    viteStaticCopy({
+      targets: [
+        {
+          src: 'node_modules/tinymce',
+          dest: 'assets',
+        },
+      ],
+    }),
+  ],
   server: {
     port: 3000,
-    // Proxy is only used in local development
-    // In production (Vercel/VPS), API calls go directly to the backend URL
     proxy: {
       '/api': {
         target: process.env.VITE_BACKEND_URL || 'http://localhost:5000',

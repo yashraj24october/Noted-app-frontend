@@ -23,19 +23,39 @@ const PRIORITY_CFG = {
   low:    { label:'Low',    dotCls:'bg-success', textCls:'text-success', bgCls:'bg-success-bg' },
 }
 
-function MarkdownContent({ content }) {
-  // Split on image tags first so we can render them as real <img> elements
+// Smart content renderer — handles both HTML (TinyMCE) and legacy Markdown
+function NoteContent({ note }) {
+  const content = note?.content || ''
+  const isHtml = note?.contentType === 'html' || /<[a-z][\s\S]*>/i.test(content)
+
+  if (!content) return null
+
+  if (isHtml) {
+    // Sanitize and render HTML — TinyMCE output
+    return (
+      <div
+        className="tinymce-content"
+        style={{
+          fontSize: 15, lineHeight: 1.9, color: 'var(--text-primary)',
+          fontFamily: "'DM Sans', sans-serif",
+        }}
+        dangerouslySetInnerHTML={{ __html: content }}
+      />
+    )
+  }
+
+  // Legacy Markdown renderer (old notes not yet converted)
   const IMAGE_RE = /!\[([^\]]*)\]\(([^)]+)\)(?:\{([^}]*)\})?/g
   const parts = []
   let lastIndex = 0, m
-  while ((m = IMAGE_RE.exec(content || '')) !== null) {
+  while ((m = IMAGE_RE.exec(content)) !== null) {
     if (m.index > lastIndex) parts.push({ type: 'text', value: content.slice(lastIndex, m.index) })
     const attrs = {}
     ;(m[3] || '').split(',').forEach(p => { const [k,v] = p.split('='); if(k&&v) attrs[k.trim()]=v.trim() })
     parts.push({ type: 'image', alt: m[1], src: m[2], align: attrs.align || 'center', width: attrs.width || '100%' })
     lastIndex = m.index + m[0].length
   }
-  if (lastIndex < (content||'').length) parts.push({ type: 'text', value: content.slice(lastIndex) })
+  if (lastIndex < content.length) parts.push({ type: 'text', value: content.slice(lastIndex) })
 
   const justifyMap = { left: 'flex-start', center: 'center', right: 'flex-end' }
 
@@ -44,15 +64,14 @@ function MarkdownContent({ content }) {
       .replace(/^### (.+)$/gm, '<h3 style="font-size:16px;font-weight:600;margin:18px 0 8px;color:var(--text-primary)">$1</h3>')
       .replace(/^## (.+)$/gm,  '<h2 style="font-size:20px;font-weight:600;margin:22px 0 10px;color:var(--text-primary)">$1</h2>')
       .replace(/^# (.+)$/gm,   '<h1 style="font-family:\'Instrument Serif\',serif;font-size:26px;font-style:italic;margin:24px 0 12px;color:var(--text-primary)">$1</h1>')
-      .replace(/\*\*(.+?)\*\*/g,'<strong style="font-weight:600;color:var(--text-primary)">$1</strong>')
-      .replace(/\*(.+?)\*/g,   '<em style="color:var(--text-secondary);font-style:italic">$1</em>')
-      .replace(/`(.+?)`/g,     '<code style="background:var(--bg-input);padding:2px 7px;border-radius:5px;font-family:\'DM Mono\',monospace;font-size:13px;color:var(--accent);border:1px solid var(--border-soft)">$1</code>')
-      .replace(/^- (.+)$/gm,   '<li style="margin:5px 0;color:var(--text-secondary);margin-left:20px;list-style:disc">$1</li>')
-      .replace(/^\d+\. (.+)$/gm,'<li style="margin:5px 0;color:var(--text-secondary);margin-left:20px;list-style:decimal">$1</li>')
-      .replace(/^> (.+)$/gm,   '<blockquote style="border-left:3px solid var(--accent);padding:4px 0 4px 14px;margin:12px 0;color:var(--text-secondary);font-style:italic;background:var(--accent-light);border-radius:0 6px 6px 0">$1</blockquote>')
+      .replace(/\*\*(.+?)\*\*/g,'<strong style="font-weight:600">$1</strong>')
+      .replace(/\*(.+?)\*/g,   '<em style="font-style:italic">$1</em>')
+      .replace(/`(.+?)`/g,     '<code style="background:var(--bg-input);padding:2px 7px;border-radius:5px;font-family:\'DM Mono\',monospace;font-size:13px;color:var(--accent)">$1</code>')
+      .replace(/^- (.+)$/gm,   '<li style="margin:5px 0;margin-left:20px;list-style:disc">$1</li>')
+      .replace(/^> (.+)$/gm,   '<blockquote style="border-left:3px solid var(--accent);padding:4px 14px;margin:12px 0;font-style:italic">$1</blockquote>')
       .replace(/^---$/gm,      '<hr style="border:none;border-top:1px solid var(--border-soft);margin:20px 0">')
       .replace(/\n\n/g,'<br/><br/>').replace(/\n/g,'<br/>')
-    return <div key={Math.random()} style={{fontSize:15,lineHeight:1.9,color:'var(--text-primary)',fontFamily:"'DM Sans',sans-serif"}} dangerouslySetInnerHTML={{__html:html}}/>
+    return <div key={Math.random()} style={{fontSize:15,lineHeight:1.9,color:'var(--text-primary)'}} dangerouslySetInnerHTML={{__html:html}}/>
   }
 
   return (
@@ -60,11 +79,7 @@ function MarkdownContent({ content }) {
       {parts.map((p, i) =>
         p.type === 'image' ? (
           <div key={i} style={{ display:'flex', justifyContent: justifyMap[p.align]||'center', margin:'14px 0' }}>
-            <img
-              src={p.src}
-              alt={p.alt}
-              style={{ width: p.width, maxWidth:'100%', height:'auto', borderRadius:8, boxShadow:'0 2px 12px rgba(0,0,0,0.1)', display:'block' }}
-            />
+            <img src={p.src} alt={p.alt} style={{ width: p.width, maxWidth:'100%', height:'auto', borderRadius:8 }} />
           </div>
         ) : renderText(p.value)
       )}
@@ -129,7 +144,7 @@ export default function NoteViewPage({ note, onClose, onEditNote, onShareNote, o
       <div className={panelCls} style={{ background: bg, boxShadow: 'var(--shadow-modal)' }}>
 
         {/* ── Topbar ── */}
-        <div style={{ display:'flex',alignItems:'center', flexWrap:'wrap',justifyContent:'space-between',rowGap:'.5rem',padding:'12px 20px',borderBottom:'1px solid var(--border-soft)',background:bg,flexShrink:0 }}>
+        <div style={{ display:'flex',alignItems:'center',justifyContent:'space-between',padding:'12px 20px',borderBottom:'1px solid var(--border-soft)',background:bg,flexShrink:0 }}>
 
           {/* Left */}
           <div style={{ display:'flex',alignItems:'center',gap:10 }}>
@@ -245,7 +260,7 @@ export default function NoteViewPage({ note, onClose, onEditNote, onShareNote, o
             )}
           </div>
 
-          {localNote.content ? <MarkdownContent content={localNote.content} /> : (
+          {localNote.content ? <NoteContent note={localNote} /> : (
             <div style={{ textAlign:'center',padding:'60px 0' }}>
               <p style={{ fontFamily:"'Instrument Serif',serif",fontStyle:'italic',fontSize:18,color:'var(--text-tertiary)' }}>No content yet</p>
               <button onClick={() => onEditNote(localNote)} style={{ marginTop:12,fontSize:13,color:'var(--accent)',background:'none',border:'none',cursor:'pointer',fontWeight:500 }}>Click Edit to add content →</button>

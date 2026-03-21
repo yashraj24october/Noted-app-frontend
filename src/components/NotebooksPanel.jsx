@@ -469,6 +469,110 @@ function NotebookView({ notebook, onClose, onEditNote, onViewNote, onRefresh }) 
   )
 }
 
+// Notebook panel (inside NotebookView function)
+
+function NotebookView({ notebook, onClose, onEditNote, onViewNote, onRefresh }) {
+  const { getNotebookNotes, removeNotesFromNotebook, addNotesToNotebook } = useNotebooks()
+  const { createNote, fetchNotes } = useNotes()
+  
+  const [notes,       setNotes]       = useState([])
+  const [loading,     setLoading]     = useState(true)
+  const [showAdd,     setShowAdd]     = useState(false)
+  const [showNewNote, setShowNewNote] = useState(false)   // ← new state
+
+  const load = async () => {
+    setLoading(true)
+    const res = await getNotebookNotes(notebook._id)
+    setNotes(res.data || [])
+    setLoading(false)
+  }
+
+  useEffect(() => { load() }, [notebook._id])
+
+  // ... handleRemove remains the same ...
+
+  const handleCreateAndAdd = async (noteData) => {
+    try {
+      const newNote = await createNote(noteData)
+      // Immediately add the newly created note to this notebook
+      await addNotesToNotebook(notebook._id, [newNote._id])
+      toast.success("Note created and added to notebook")
+      load()           // refresh list
+      fetchNotes()     // update global notes if needed
+      setShowNewNote(false)
+    } catch (err) {
+      toast.error("Failed to create note")
+    }
+  }
+
+  const cfg = COLORS[notebook.color] || COLORS.indigo
+
+  return (
+    <div className="fixed inset-0 z-[100] animate-fade-in flex items-stretch justify-end" ...>
+      <div className="relative w-full max-w-3xl flex flex-col animate-slide-in-right" ...>
+
+        {/* ── Header ── */}
+        <div style={{ padding:'16px 22px', borderBottom:'1px solid var(--border-soft)', display:'flex', alignItems:'center', justifyContent:'space-between', background:'var(--bg-card)', flexShrink:0 }}>
+          <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+            <button onClick={onClose} ... >←</button>
+            <div ...>{notebook.emoji}</div>
+            <div>
+              <h2 ...>{notebook.name}</h2>
+              {notebook.description && <p ...>{notebook.description}</p>}
+            </div>
+          </div>
+
+          <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+            <span ...>{notes.length} note{notes.length !== 1 ? 's' : ''}</span>
+
+            {/* ── NEW BUTTON ── */}
+            <Tooltip text="Create new note in this notebook" position="bottom">
+              <button
+                onClick={() => setShowNewNote(true)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  padding: '7px 14px',
+                  borderRadius: 8,
+                  background: 'var(--accent)',
+                  color: '#fff',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: 13,
+                  fontWeight: 500,
+                  boxShadow: 'var(--shadow-accent)',
+                }}
+              >
+                + New Note
+              </button>
+            </Tooltip>
+
+            <Tooltip text="Add existing notes" ...>
+              <button onClick={() => setShowAdd(true)} ... >＋ Add notes</button>
+            </Tooltip>
+            <button onClick={onClose} ... >✕</button>
+          </div>
+        </div>
+
+        {/* Notes list ... remains almost the same */}
+
+      </div>
+
+      {showAdd && <AddNotesModal ... />}
+
+      {/* ── NEW NOTE EDITOR ── */}
+      {showNewNote && (
+        <NoteEditor
+          note={null}                   // ← new note
+          onClose={() => setShowNewNote(false)}
+          onSaved={handleCreateAndAdd}  // ← important!
+        />
+      )}
+    </div>
+  )
+}
+
 // ─── Main NotebooksPanel ──────────────────────────────
 export default function NotebooksPanel({ onViewNote, onEditNote, onRefresh, initialOpen, onClose }) {
   const { notebooks, fetchNotebooks, createNotebook, updateNotebook, deleteNotebook } = useNotebooks()
